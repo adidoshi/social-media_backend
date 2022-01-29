@@ -4,13 +4,23 @@ const ErrorHandler = require("../utils/errorResponse");
 
 // PUT request - /api/user/profile/update
 const updateUser = asyncHandler(async (req, res, next) => {
-  const { name, email, password, pic, desc, city, from } = req.body;
+  const {
+    name,
+    email,
+    password,
+    profilePicture,
+    coverPicture,
+    desc,
+    city,
+    from,
+  } = req.body;
   const user = await User.findById(req.user._id);
 
   if (user) {
     user.name = name || user.name;
     user.email = email || user.email;
-    user.pic = pic || user.pic;
+    user.profilePicture = profilePicture || user.profilePicture;
+    user.coverPicture = coverPicture || user.coverPicture;
     user.desc = desc || user.desc;
     user.city = city || user.city;
     user.from = from || user.from;
