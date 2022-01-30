@@ -5,17 +5,18 @@ const User = require("../models/UserModel");
 
 // create post
 const createPost = asyncHandler(async (req, res, next) => {
-  const { desc, img, location } = req.body;
-  if (!desc || !img) {
+  const { desc, location, pic } = req.body;
+  if (!desc || !pic || !location) {
     res.status(400);
     return next(new ErrorHandler("Fill all the details", 400));
   } else {
     const newPost = new Post({
       user: req.user._id,
       desc,
-      img: pic,
       location,
+      img: pic,
     });
+    console.log(desc, pic, location);
     const createdPost = await newPost.save();
     res.status(201).json(createdPost);
   }
