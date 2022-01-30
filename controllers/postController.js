@@ -1,10 +1,11 @@
 const asyncHandler = require("express-async-handler");
 const ErrorHandler = require("../utils/errorResponse");
 const Post = require("../models/PostModel");
+const User = require("../models/UserModel");
 
 // create post
 const createPost = asyncHandler(async (req, res, next) => {
-  const { desc, img } = req.body;
+  const { desc, img, location } = req.body;
   if (!desc || !img) {
     res.status(400);
     return next(new ErrorHandler("Fill all the details", 400));
@@ -12,7 +13,8 @@ const createPost = asyncHandler(async (req, res, next) => {
     const newPost = new Post({
       user: req.user._id,
       desc,
-      img: pic,
+      img,
+      location,
     });
     const createdPost = await newPost.save();
     res.status(201).json(createdPost);
@@ -66,10 +68,11 @@ const getPost = asyncHandler(async (req, res, next) => {
 
 // get timeline posts
 const timelinePosts = asyncHandler(async (req, res, next) => {
-  const userPosts = await Post.find({ userId: req.user._id });
+  const currentUser = await User.findById(req.params.userId);
+  const userPosts = await Post.find({ user: req.user._id });
   const friendPosts = await Promise.all(
     currentUser.followings.map((friendId) => {
-      return Post.find({ userId: friendId });
+      return Post.find({ user: friendId });
     })
   );
   res.status(200).json(userPosts.concat(...friendPosts));
@@ -77,8 +80,10 @@ const timelinePosts = asyncHandler(async (req, res, next) => {
 
 // get user's all posts
 const userPosts = asyncHandler(async (req, res, next) => {
-  const posts = await Post.find({ user: req.user._id });
-  res.json(posts);
+  const user = await User.findOne({ name: req.params.name });
+  const posts = await Post.find({ user: user._id });
+  console.log(posts);
+  res.status(200).json(posts);
 });
 
 // like a post
