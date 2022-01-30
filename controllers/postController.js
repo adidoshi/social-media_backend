@@ -13,7 +13,7 @@ const createPost = asyncHandler(async (req, res, next) => {
     const newPost = new Post({
       user: req.user._id,
       desc,
-      img,
+      img: pic,
       location,
     });
     const createdPost = await newPost.save();
