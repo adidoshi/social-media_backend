@@ -6,11 +6,13 @@ const {
   followUser,
   unfollowUser,
   getFriends,
+  getAllUsers,
 } = require("../controllers/userController");
 const { protect } = require("../middlewares/authMiddleware");
 const router = express.Router();
 
 router.get("/", protect, getUser);
+router.get("/all", protect, getAllUsers);
 router.put("/profile/update", protect, updateUser);
 router.delete("/profile/:id", protect, deleteUser);
 
