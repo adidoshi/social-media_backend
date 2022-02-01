@@ -67,34 +67,73 @@ const getUser = asyncHandler(async (req, res, next) => {
 // PUT req - follow a user
 const followUser = asyncHandler(async (req, res, next) => {
   const { userId } = req.body;
-  const user = await User.findById(req.params.id);
-  const currentUser = await User.findById(userId);
-
-  if (!user || !currentUser) {
-    return next(new ErrorHandler("Invalid User details", 404));
+  const user = await User.findById(userId);
+  if (user.followers.includes(req.user._id)) {
+    return next(new ErrorHandler("You already follow this user", 403));
   }
 
-  if (!user.followers.includes(userId)) {
-    await user.updateOne({ $push: { followers: userId } });
-    await currentUser.updateOne({ $push: { followings: req.params.id } });
-    res.status(200).json("User has been followed");
-  } else {
-    res.status(403).json("You already follow this user");
-  }
+  User.findByIdAndUpdate(
+    userId,
+    {
+      $push: { followers: req.user._id },
+    },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        return next(new ErrorHandler(err, 422));
+      }
+    }
+  );
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $push: { followings: userId },
+    },
+    { new: true }
+  )
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      return next(new ErrorHandler(err, 422));
+    });
 });
 
 // PUT req - unfollow user
 const unfollowUser = asyncHandler(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-  const currentUser = await User.findById(req.body.userId);
-
-  if (user.followers.includes(req.body.userId)) {
-    await user.updateOne({ $pull: { followers: req.body.userId } });
-    await currentUser.updateOne({ $pull: { followings: req.params.id } });
-    res.status(200).json("User has been unfollowed");
-  } else {
-    res.status(403).json("You don't follow this user");
+  const { userId } = req.body;
+  const user = await User.findById(userId);
+  if (!user.followers.includes(req.user._id)) {
+    return next(new ErrorHandler("You don't follow this user", 403));
   }
+
+  User.findByIdAndUpdate(
+    userId,
+    {
+      $pull: { followers: req.user._id },
+    },
+    { new: true },
+    (err, result) => {
+      if (err) {
+        return next(new ErrorHandler(err, 422));
+      }
+    }
+  );
+
+  User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $pull: { followings: userId },
+    },
+    { new: true }
+  )
+    .then((result) => {
+      res.json(result);
+    })
+    .catch((err) => {
+      return next(new ErrorHandler(err, 422));
+    });
 });
 
 // get friends

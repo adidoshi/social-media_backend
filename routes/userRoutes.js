@@ -14,8 +14,8 @@ router.get("/", protect, getUser);
 router.put("/profile/update", protect, updateUser);
 router.delete("/profile/:id", protect, deleteUser);
 
-router.put("/:id/follow", protect, followUser);
-router.put("/:id/unfollow", protect, unfollowUser);
+router.put("/follow", protect, followUser);
+router.put("/unfollow", protect, unfollowUser);
 router.get("/friends/:userId", protect, getFriends);
 
 module.exports = router;

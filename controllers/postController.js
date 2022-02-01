@@ -101,6 +101,7 @@ const likeUnlikePost = asyncHandler(async (req, res, next) => {
 
 // comment on a post
 const commentPost = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
   const post = await Post.findById(req.params.id);
   if (!post) {
     return next(new ErrorHandler("Post not found", 404));
@@ -126,6 +127,8 @@ const commentPost = asyncHandler(async (req, res, next) => {
     post.comments.push({
       user: req.user._id,
       comment: req.body.comment,
+      proPic: user.profilePicture || "",
+      userName: user.name,
     });
     await post.save();
     return res.status(200).json({

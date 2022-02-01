@@ -38,6 +38,12 @@ const PostSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
+        proPic: {
+          type: String,
+        },
+        userName: {
+          type: String,
+        },
       },
     ],
   },
