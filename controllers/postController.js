@@ -35,7 +35,6 @@ const updatePost = asyncHandler(async (req, res, next) => {
 
   if (post) {
     post.desc = desc;
-
     const updatedPost = await post.save();
     res.json(updatedPost);
   } else {
@@ -47,7 +46,6 @@ const updatePost = asyncHandler(async (req, res, next) => {
 // Delete a post
 const deletePost = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
-  console.log(post.user);
 
   if (post.user.toString() !== req.user._id.toString()) {
     return next(new ErrorHandler("You can't perform this action", 401));
@@ -108,7 +106,6 @@ const commentPost = asyncHandler(async (req, res, next) => {
   }
 
   let commentIndex = -1;
-
   post.comments.forEach((item, index) => {
     if (item.user.toString() === req.user._id.toString()) {
       commentIndex = index;

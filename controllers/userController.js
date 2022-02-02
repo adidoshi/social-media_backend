@@ -2,7 +2,7 @@ const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
 const ErrorHandler = require("../utils/errorResponse");
 
-// PUT request - /api/user/profile/update
+// Update user PUT request - /api/user/profile/update
 const updateUser = asyncHandler(async (req, res, next) => {
   const {
     name,
@@ -34,7 +34,7 @@ const updateUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-// GET request - /api/user/all
+// GET all users request - /api/user/all
 const getAllUsers = asyncHandler(async (req, res, next) => {
   const keyword = req.query.search
     ? {
@@ -49,7 +49,7 @@ const getAllUsers = asyncHandler(async (req, res, next) => {
   res.status(200).json(users);
 });
 
-// DELETE request - /api/user/profile/:id
+// DELETE an user request - /api/user/profile/:id
 const deleteUser = asyncHandler(async (req, res, next) => {
   if (req.params.id.toString() !== req.user._id.toString()) {
     return next(new ErrorHandler("You can't perform this action", 401));
@@ -62,7 +62,7 @@ const deleteUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-// GET req - /api/user
+// GET single user req - /api/user
 const getUser = asyncHandler(async (req, res, next) => {
   const userId = req.query.userId;
   const name = req.query.name;

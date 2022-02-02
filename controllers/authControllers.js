@@ -3,7 +3,7 @@ const asyncHandler = require("express-async-handler");
 const generateToken = require("../utils/generateToken");
 const ErrorHandler = require("../utils/errorResponse");
 
-// POST request - /api/users/register
+// Register user post request - /api/users/register
 const registerUser = asyncHandler(async (req, res, next) => {
   const { name, password, email } = req.body;
 
@@ -13,7 +13,6 @@ const registerUser = asyncHandler(async (req, res, next) => {
   }
 
   const userExists = await User.findOne({ email });
-
   if (userExists) {
     return next(new ErrorHandler("User already exists", 404));
   }
@@ -38,7 +37,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
   }
 });
 
-// POST request - /api/users/login
+// Login user post request - /api/users/login
 const loginUser = asyncHandler(async (req, res, next) => {
   const { password, email } = req.body;
 
