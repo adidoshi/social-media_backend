@@ -80,7 +80,6 @@ const timelinePosts = asyncHandler(async (req, res, next) => {
 // get user's all posts
 const userPosts = asyncHandler(async (req, res, next) => {
   const user = await User.findById(req.params.userId);
-  console.log(user);
   const posts = await Post.find({ user: user._id });
   res.status(200).json(posts);
 });
